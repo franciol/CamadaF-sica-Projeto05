@@ -254,6 +254,4 @@ def teste():
     '''
     print("Mensagem do tipo: ",msgTupe)
     print("\nFoi enviado um byte no payload igual a: ",int_to_byte(0,1)," e foi recebido um byte igual a: ",receaved)
-'''
-#print(fromByteToInt(int_to_byte(10000,2)))
-teste()
+    '''
