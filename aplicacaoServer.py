@@ -159,6 +159,8 @@ def sistemaRecebimento(com):
                 print("Recebeu tudo certo")
                 print("ENVIANDO MENSAGEM TIPO 5: ACKNOWLEDGE")
                 arquivo += payload
+                print("Pacote número ", pacoteAtual, " recebido, contendo payload de ", len(payload), " bytes")
+                print(InsperTor, " pacotes recebidos de um total de ", esperandoPacotes)
                 InsperTor += 1
                 com.sendData(None,5)
                 ouvindoMensagem4 = False
@@ -176,9 +178,11 @@ def sistemaRecebimento(com):
 
         if pacoteAtual == esperandoPacotes:
             comecou == False
+            print("Tamanho total do payload do arquivo recebido: " len(arquivo))
             break
 
         else:
+            print("Recomeçando protocolo de comunicação para receber o pacote número ", InsperTor)
             continue
 
 
