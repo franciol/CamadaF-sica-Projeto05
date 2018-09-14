@@ -38,7 +38,7 @@ def fromByteToInt(bytes):
 
 def sistemaRecebimento(com):
     com.enable()
-    print("porta COM aberta com sucesso")
+    
 
     ouvindoMensagem1 = True
     ouvindoMensagem3 = True
@@ -52,14 +52,14 @@ def sistemaRecebimento(com):
 
     while ouvindoMensagem1:
         
-        print("OUVINDO MENSAGEM 1")
+        print("\n\n\n\n * OUVINDO MENSAGEM 1\n\n\n\n\n\n")
         bytesSeremLidos = com.rx.getBufferLen(False)
 
         payload, lenPayload, messageType, ack, numeroPacote, totalPacote = com.getData(bytesSeremLidos)
         
         
         if messageType == 1:
-            print("\n * RECEBEU MENSAGEM 1")
+            print("\n\n\n\n\n\n * RECEBEU MENSAGEM 1 \n")
             ouvindoMensagem1 = False
             
         
@@ -71,8 +71,8 @@ def sistemaRecebimento(com):
             
             
             com.sendData(facadeEnlace.encapsulate(None, 2))
-            print("MANDOU MENSAGEM 2 \n")
-            print("OUVINDO MENSAGEM 3")
+            print(" * MANDOU MENSAGEM 2 \n")
+            print(" * OUVINDO MENSAGEM 3")
         
             bytesSeremLidos = com.rx.getBufferLen(True)
             if bytesSeremLidos == 0:
@@ -82,7 +82,7 @@ def sistemaRecebimento(com):
             if messageType == 3:
                 print("\n * RECEBEU MENSAGEM 3 \n")
                 ouvindoMensagem3 = False
-                print("OUVINDO MENSAGEM 4 \n")    
+                print(" * OUVINDO MENSAGEM 4 – RECEBIMENTO DE PACOTES \n")    
                 
             
             else:
