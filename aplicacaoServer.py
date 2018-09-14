@@ -60,7 +60,7 @@ def sistemaRecebimento(com):
         if messageType == 1:
             print("RECEBEU MENSAGEM 1")
             ouvindoMensagem1 = False
-            break
+            
         
         else:
             continue
@@ -90,8 +90,8 @@ def sistemaRecebimento(com):
 
         while ouvindoMensagem4:
             print("OUVINDO MENSAGEM 4")
-            com.sendData(None,3)
-            print("MANDOU MENSAGEM 3")
+            #com.sendData(None,3)
+            #print("MANDOU MENSAGEM 3")
         
             bytesSeremLidos = com.rx.getBufferLen(True)
             payload, lenPayload, messageType, ack, numeroPacote, totalPacote = com.getData(bytesSeremLidos)
