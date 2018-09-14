@@ -69,7 +69,7 @@ def sistemaRecebimento(com):
         while ouvindoMensagem3:
             
             print("OUVINDO MENSAGEM 3")
-            com.sendData(None,2)
+            com.sendData(facadeEnlace.encapsulate(None, 2))
             print("MANDOU MENSAGEM 2")
         
             bytesSeremLidos = com.rx.getBufferLen(True)
@@ -90,7 +90,7 @@ def sistemaRecebimento(com):
 
         while ouvindoMensagem4:
             print("OUVINDO MENSAGEM 4")
-            #com.sendData(None,3)
+            #com.sendData(facadeEnlace.encapsulate(None, 3))
             #print("MANDOU MENSAGEM 3")
         
             bytesSeremLidos = com.rx.getBufferLen(True)
@@ -113,7 +113,7 @@ def sistemaRecebimento(com):
                                 print("ERRO TIPO 4: PACOTE INESPERADO")
                                 print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
                                 print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
-                                com.sendData(None,6)
+                                com.sendData(facadeEnlace.encapsulate(None, 6))
                                 ouvindoMensagem4 = False
                                 InsperTor = 1
                                 pacoteAtual = 0
@@ -129,7 +129,7 @@ def sistemaRecebimento(com):
                                 esperandoPacotes = 0
                                 comecou = False
 
-                                com.sendData(None,7)
+                                com.sendData(facadeEnlace.encapsulate(None, 7))
                                 print("MANDOU MENSAGEM TIPO 7")
                                 time.sleep(4)
                                 com.disable()
@@ -145,7 +145,7 @@ def sistemaRecebimento(com):
                     esperandoPacotes = 0
                     comecou = False
 
-                    com.sendData(None,7)
+                    com.sendData(facadeEnlace.encapsulate(None, 7))
                     print("MANDOU MENSAGEM TIPO 7")
                     time.sleep(4)
                     com.disable()
@@ -162,14 +162,14 @@ def sistemaRecebimento(com):
                 print("Pacote número ", pacoteAtual, " recebido, contendo payload de ", len(payload), " bytes")
                 print(InsperTor, " pacotes recebidos de um total de ", esperandoPacotes)
                 InsperTor += 1
-                com.sendData(None,5)
+                com.sendData(facadeEnlace.encapsulate(None, 5))
                 ouvindoMensagem4 = False
                 break
             
             else:
                 print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
                 print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
-                com.sendData(None,6)
+                com.sendData(facadeEnlace.encapsulate(None, 6))
                 ouvindoMensagem4 = False
                 continue
 
@@ -189,7 +189,7 @@ def sistemaRecebimento(com):
         
     
     time.sleep(2)
-    com.sendData(None,7)
+    com.facadeEnlace.encapsulate(None, 7)
     print("MANDOU MENSAGEM TIPO 7")
     time.sleep(2)
     com.disable()
