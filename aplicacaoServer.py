@@ -23,7 +23,7 @@ import io,os
 ####################################################
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
-serialName = "/dev/cu.usbmodem1421" # Mac    (variacao de)
+serialName = "/dev/cu.usbmodem1411" # Mac    (variacao de)
 #serialName = "COM4"                  # Windows(variacao de)
 
 ####################################################
@@ -178,7 +178,7 @@ def sistemaRecebimento(com):
 
         if pacoteAtual == esperandoPacotes:
             comecou == False
-            print("Tamanho total do payload do arquivo recebido: " len(arquivo))
+            print("Tamanho total do payload do arquivo recebido: ", len(arquivo))
             break
 
         else:

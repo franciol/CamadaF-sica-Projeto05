@@ -63,6 +63,6 @@ class enlace(object):
         """
         print('entrou na leitura e tentara ler ' + str(size) )
         data = self.rx.getNData(size)
-        resultData,txLen, messageType, ack = facadeEnlace.readHeadNAll(bytearray(data))
+        resultData,txLen, messageType, ack,  numeroPacote, totalPacote = facadeEnlace.readHeadNAll(bytearray(data))
 
-        return(resultData, len(resultData), messageType, ack)
+        return(resultData, len(resultData), messageType, ack, numeroPacote, totalPacote)
