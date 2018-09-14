@@ -81,6 +81,8 @@ def sistemaEnvio(payload, com):
                             receivedCorrectly = True
                         elif messaType == 6:
                             print("Erro no envio, Reenviando")
+                        elif messaType == 8:
+                            print("Pacote enviado diferente do esperado")
                         else:
                             print("Erro de sincronização, messaType = ",messaType)
                             print("Encerrando comunicação, favor reiniciar")
