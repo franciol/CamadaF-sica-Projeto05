@@ -247,6 +247,7 @@ def teste():
     #receaved, txLenRead, msgTupe = readHeadNAll(testeSubject)
     list = b''
     for i in range(0,len(testeSubject)):
+        print(i)
         sanityCheck, txLen, messageType, ack, actualPackage, totalPackage = readHeadNAll(testeSubject[i])
         print(actualPackage," de ",totalPackage)
         list+=sanityCheck

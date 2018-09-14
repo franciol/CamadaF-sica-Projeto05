@@ -26,6 +26,7 @@ def sistemaEnvio(payload, com):
 
     #Variaveis
     timerparaACKNACK = 20
+    issendingPayload = False
     enviou01 = False
     chegouresposta2 = False
     enviouresposta3 = False
@@ -33,6 +34,7 @@ def sistemaEnvio(payload, com):
     chegoupayloadnoserver = False
     chegoupayloadcerto = False
     temtimout = False
+    connectionALL = True
 
     com.sendData(None,1)
     enviou01 = True
@@ -40,14 +42,14 @@ def sistemaEnvio(payload, com):
     temtimout = True
 
 
-    while True:
+    while connectionALL:
         bufferLen = com.rx.getBufferLen(temtimout)
         print("bufferLen: ",bufferLen)
         messaType = -1
         if bufferLen == 0:
             print("Não entrou nada")
         else:
-            resultData, resultDataLen, messaType ,ack= com.getData(bufferLen)
+            resultData, resultDataLen, messaType ,ack ,actualPackage ,totalPackage= com.getData(bufferLen)
 
         if messaType == 1:
             print("Erro")
@@ -58,10 +60,35 @@ def sistemaEnvio(payload, com):
             enviouresposta3 = True
             print("\nAvisando o server que estou ouvindo")
             time.sleep(5)
-            com.sendData(payload,4)
             print("\nEnviando payload")
-            envioupayload = True
             temtimout = False
+            issendingPayload = True
+            while issendingPayload:
+                for payloadID in range(0,len(payload)):
+                    receivedCorrectly = False
+                    while not receivedCorrectly:
+                        com.sendData(payload[payloadID],4)
+                        print("Enviando pacote ",payloadID+1," de ",len(payloadID)," .....")
+                        bufferLen = com.rx.getBufferLen(temtimout)
+                        messaType = -1
+                        if bufferLen == 0:
+                            print("Não entrou nada")
+                        else:
+                            resultData, resultDataLen, messaType ,ack ,actualPackage ,totalPackage= com.getData(bufferLen)
+                        if messaType == 5:
+                            print("Servidor recebeu o pacote ",payloadID+1," corretamente")
+                            receivedCorrectly = True
+                        elif messaType == 6:
+                            print("Erro no envio, Reenviando")
+                        else:
+                            print("Erro de sincronização")
+                            print("Encerrando comunicação, favor reiniciar")
+                            connectionALL = False
+                            break
+                issendingPayload = False
+
+
+
 
 
         elif messaType == 5:
@@ -132,7 +159,7 @@ import tkinter.filedialog as fdlg
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/cu.usbmodem1421" # Mac    (variacao de)
-serialName = "COM3"                  # Windows(variacao de)
+serialName = "COM10"                  # Windows(variacao de)
 
 
 
