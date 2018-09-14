@@ -84,8 +84,8 @@ def encapsulate(payload, messageType):
 
         return all
     elif messageType == 4:
-        sad = 0
         #Cliente faz efetivamente transmissão para servidor
+        sad = 0
         listOfPackages = []
         if (len(payload)%90)==0 :
             packTotal =int(len(payload)/90)
@@ -96,6 +96,9 @@ def encapsulate(payload, messageType):
         for i in range(0,packTotal):
             payloadfinal = payload[i*90:(i*90)+90]
             payloadLen = int_to_byte(len(payloadfinal),5)
+            listOfPackages.insert(a,all)
+            print(listOfPackages[0])
+            a+=1
 
             head = int_to_byte(4,1)+int_to_byte(i,2)+int_to_byte(packTotal,2)+payloadLen+EOP+stuffingByte
 
@@ -103,15 +106,6 @@ def encapsulate(payload, messageType):
             all += head
             all += payloadfinal
             all += EOP
-            if a == 0:
-                print("messageType   : ",int_to_byte(4,1))
-                print("actual package: ",int_to_byte(i,2))
-                print("Total packages: ",int_to_byte(packTotal,2))
-                print("payloadlen    : ",payloadLen)
-                print("EOP           : ",EOP)
-                print("stuffingByte  : ",stuffingByte)
-            listOfPackages.insert(a,all)
-            a+=1
 
 
         return listOfPackages
@@ -174,6 +168,7 @@ def encapsulate(payload, messageType):
         return all
     else:
         head = None
+        print("erro NOS")
         #messageType fora do protocolo e portanto byte não deve ser formado com HEAD
         all = bytes()
         all += head
@@ -247,11 +242,15 @@ def teste():
     #receaved, txLenRead, msgTupe = readHeadNAll(testeSubject)
     list = b''
     for i in range(0,len(testeSubject)):
-        print(i)
+        print(testeSubject[i],"\n")
+        print("payloadLEN ",len(testeSubject[i]))
         sanityCheck, txLen, messageType, ack, actualPackage, totalPackage = readHeadNAll(testeSubject[i])
         print(actualPackage," de ",totalPackage)
-        list+=sanityCheck
-    print(list==imgByteArr)
+        print("messaType, ",messageType)
+        print("ACK ",ack)
+        print("txlen ",txLen,"\n\n\n")
+        '''list+=sanityCheck
+    print(list==imgByteArr)'''
     '''
     print("Mensagem do tipo: ",msgTupe)
     print("\nFoi enviado um byte no payload igual a: ",int_to_byte(0,1)," e foi recebido um byte igual a: ",receaved)

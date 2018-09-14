@@ -51,11 +51,11 @@ class enlace(object):
     ################################
     # Application  interface       #
     ################################
-    def sendData(self, data, messageType):
+    def sendData(self, data):
         """ Send data over the enlace interface
         """
-        dataEncap = facadeEnlace.encapsulate(data, messageType)
-        self.tx.sendBuffer(dataEncap)
+        #dataEncap = facadeEnlace.encapsulate(data, messageType)
+        self.tx.sendBuffer(data)
 
     def getData(self, size):
         """ Get n data over the enlace interface

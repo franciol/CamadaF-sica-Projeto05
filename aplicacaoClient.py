@@ -36,7 +36,7 @@ def sistemaEnvio(payload, com):
     temtimout = False
     connectionALL = True
 
-    com.sendData(None,1)
+    com.sendData(facadeEnlace.encapsulate(None, 1))
     enviou01 = True
     esperaresposta2 = True
     temtimout = True
@@ -56,18 +56,21 @@ def sistemaEnvio(payload, com):
         elif messaType == 2 and enviou01:
             chegouresposta2 = True
             print("Servidor ouvindo corretamente")
-            com.sendData(None, 3)
+            com.sendData(facadeEnlace.encapsulate(None, 3))
             enviouresposta3 = True
             print("\nAvisando o server que estou ouvindo")
             time.sleep(5)
             print("\nEnviando payload")
             temtimout = False
             issendingPayload = True
+            payloadlist = facadeEnlace.encapsulate(payload,4)
             while issendingPayload:
-                for payloadID in range(0,len(payload)):
+                for payloadID in range(0,len(payloadlist)):
                     receivedCorrectly = False
                     while not receivedCorrectly:
-                        com.sendData(payload[payloadID],4)
+                        #print(payload)
+                        com.sendData(payloadlist[payloadID])
+                        time.sleep(2)
                         print("Enviando pacote ",payloadID+1," de ",len(payloadID)," .....")
                         bufferLen = com.rx.getBufferLen(temtimout)
                         messaType = -1
@@ -103,7 +106,7 @@ def sistemaEnvio(payload, com):
             print("Servidor recebeu os dados mas pacote estava corrompido")
             #Reenviando payload
             print("\nReenviando dados")
-            com.sendData(payload,4)
+            temtimout = True
             timerparaACKNACK = 20
 
         elif messaType == 7:
@@ -159,7 +162,7 @@ import tkinter.filedialog as fdlg
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/cu.usbmodem1421" # Mac    (variacao de)
-serialName = "COM10"                  # Windows(variacao de)
+serialName = "COM11"                  # Windows(variacao de)
 
 
 
