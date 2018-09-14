@@ -23,7 +23,7 @@ import io,os
 ####################################################
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
-serialName = "/dev/cu.usbmodem1421" # Mac    (variacao de)
+serialName = "/dev/cu.usbmodem1411" # Mac    (variacao de)
 #serialName = "COM4"                  # Windows(variacao de)
 
 ####################################################
@@ -106,38 +106,19 @@ def sistemaRecebimento(com):
 
 
             else:
-                if esperandoPacotes == totalPacote:
-                    if comecou == True:
-                        if InsperTor != numeroPacote:
-                        
-                            print("-------------------------")
-                            print("ERRO TIPO 4: PACOTE INESPERADO")
-                            print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
-                            print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
-                            print("-------------------------")
-                            com.sendData(facadeEnlace.encapsulate(None, 6))
-                            ouvindoMensagem4 = False
-                            InsperTor = 1
-                            pacoteAtual = 0
-                            esperandoPacotes = 0
-                            comecou = False
-                                
+                
+            
+                if InsperTor != numeroPacote:
+                
+                    print("-------------------------")
+                    print("ERRO TIPO 4: PACOTE INESPERADO")
+                    print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
+                    print("ENVIANDO MENSAGEM TIPO 8: NACKNOWLEDGE, reenvie pacote número ", InsperTor)
+                    print("-------------------------")
+                    com.sendData(facadeEnlace.encapsulate(InsperTor, 8))
+                                                            
 
-                else:
-                    ouvindoMensagem4 = False
-                    InsperTor = 1
-                    pacoteAtual = 0
-                    esperandoPacotes = 0
-                    comecou = False
-
-                    com.sendData(facadeEnlace.encapsulate(None, 7))
-                    print("-------------------------")
-                    print("MANDOU MENSAGEM TIPO 7")
-                    time.sleep(4)
-                    com.disable()
-                    print("-------------------------")
-                    print("ERRO FATAL DESCONHECIDO – RECOMECE TRANSMISSÃO")
-                    print("-------------------------")
+               
 
                 pacoteAtual = numeroPacote
 
