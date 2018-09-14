@@ -1,7 +1,7 @@
 from PIL import Image,ImageDraw
 import io,os
 
-EOP = b'/00/00/00/00'
+EOP = b'/00'
 stuffingByte = b'/7a/'
 
 
@@ -31,18 +31,22 @@ def encapsulate(payload, messageType):
     else:
         txLen = len(int_to_byte(0,1))
 
-    print('txLen: ',txLen)
     '''
-        Head = 26 bytes:
+        Head = 17 bytes:
             tipo de msg: 1 byte
             pacote atual: 2 bytes
             numero de pacotes: 2bytes
             payloadLen = 5 bytes
-            EOP = 12 bytes
+            EOP = 3 bytes
             stuffing = 4 bytes
+
+
+            package = 128
+            head = 17
+            EOP = 3
+            payload = 108
     '''
     payloadfinal = bytes()
-    print("EOP stuffing: ",len(stuffingByte))
     if payload != None:
         for i in range(0, len(payload)):
             if EOP == payload[i:i+13]:
@@ -87,14 +91,13 @@ def encapsulate(payload, messageType):
         #Cliente faz efetivamente transmissão para servidor
         sad = 0
         listOfPackages = []
-        if (len(payload)%90)==0 :
-            packTotal =int(len(payload)/90)
+        if (len(payload)%108)==0 :
+            packTotal =int(len(payload)/108)
         else:
-            packTotal =int(1+(len(payload)//90))
-        print("packTotal: ",packTotal)
+            packTotal =int(1+(len(payload)//108))
         a = 0
         for i in range(0,packTotal):
-            payloadfinal = payload[i*90:(i*90)+90]
+            payloadfinal = payload[i*108:(i*108)+108]
             payloadLen = int_to_byte(len(payloadfinal),5)
 
             head = int_to_byte(4,1)+int_to_byte(i,2)+int_to_byte(packTotal,2)+payloadLen+EOP+stuffingByte
@@ -183,15 +186,13 @@ def encapsulate(payload, messageType):
 def readHeadNAll(receivedAll):
     #print(receivedAll)
 
-    head = receivedAll[0:26]
+    head = receivedAll[0:17]
     messageType = fromByteToInt(head[0:1])
-    actualPackage = fromByteToInt(receivedAll[1:3])+1
-    totalPackage = fromByteToInt(receivedAll[4:5])
-    txLen = fromByteToInt(head[5:10])
-    eopSystem = head[10:22]
-    stuffByte = head[22:26]
-
-    print(txLen)
+    actualPackage = fromByteToInt(head[1:3])+1
+    totalPackage = fromByteToInt(head[4:6])
+    txLen = fromByteToInt(head[6:10])
+    eopSystem = head[10:13]
+    stuffByte = head[13:17]
 
     #Leitura do messaType do pacote recebido
 
@@ -201,7 +202,7 @@ def readHeadNAll(receivedAll):
     stuffByteCount = 0
     ack = False
 
-    for i in range(26, len(receivedAll)):
+    for i in range(17, len(receivedAll)):
         if receivedAll[i:i+1] == stuffByte:
             sanityCheck += receivedAll[i+1:i+14]
             i +=14
@@ -237,20 +238,8 @@ def teste():
     imgByteArr = io.BytesIO()
     img.save(imgByteArr, format='JPEG')
     imgByteArr = imgByteArr.getvalue()
-    testeSubject = encapsulate(imgByteArr,4)
-    #receaved, txLenRead, msgTupe = readHeadNAll(testeSubject)
-    list = b''
-    for i in range(0,len(testeSubject)):
-        print(testeSubject[i],"\n")
-        print("payloadLEN ",len(testeSubject[i]))
-        sanityCheck, txLen, messageType, ack, actualPackage, totalPackage = readHeadNAll(testeSubject[i])
-        print(actualPackage," de ",totalPackage)
-        print("messaType, ",messageType)
-        print("ACK ",ack)
-        print("txlen ",txLen,"\n\n\n")
-        '''list+=sanityCheck
-    print(list==imgByteArr)'''
-    '''
-    print("Mensagem do tipo: ",msgTupe)
-    print("\nFoi enviado um byte no payload igual a: ",int_to_byte(0,1)," e foi recebido um byte igual a: ",receaved)
-    '''
+    testeSubject = encapsulate(None,5)
+    sanityCheck, txLen, messageType, ack, actualPackage, totalPackage= readHeadNAll(testeSubject)
+
+
+teste()

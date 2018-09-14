@@ -85,7 +85,6 @@ def sistemaEnvio(payload, com):
                         else:
                             print("Erro de sincronização, messaType = ",messaType)
                             print("Encerrando comunicação, favor reiniciar")
-                            connectionALL = False
 
                 print("terminou o Envio")
                 temtimout = True
@@ -95,7 +94,7 @@ def sistemaEnvio(payload, com):
 
 
 
-        
+
 
         elif messaType == 7:
             com.disable()
