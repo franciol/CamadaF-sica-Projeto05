@@ -79,7 +79,7 @@ class RX(object):
         """
         timeout = False
         lenGrow = -1
-        print("len original:",len(self.buffer))
+        
         valorIni = 0
         if temtimout:
             valorIni = 5
@@ -88,7 +88,7 @@ class RX(object):
 
 
         while len(self.buffer) != lenGrow or len(self.buffer) == 0:
-            print("Online")
+            
             lenGrow=len(self.buffer)
             time.sleep(1)
             if valorIni == 0 :

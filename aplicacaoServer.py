@@ -45,9 +45,10 @@ def sistemaRecebimento(com):
     ouvindoMensagem4 = True
     pacoteAtual = 0
     esperandoPacotes = 0
-    InsperTor = 1 
+    InsperTor = 0 
     comecou = False
     erro4 = 0
+    arquivo = bytes()
 
     while ouvindoMensagem1:
         
@@ -55,7 +56,7 @@ def sistemaRecebimento(com):
         bytesSeremLidos = com.rx.getBufferLen(False)
 
         payload, lenPayload, messageType, ack, numeroPacote, totalPacote = com.getData(bytesSeremLidos)
-        print("messageType ", messageType)
+        
         
         if messageType == 1:
             print("RECEBEU MENSAGEM 1")
@@ -81,7 +82,7 @@ def sistemaRecebimento(com):
                 print("RECEBEU MENSAGEM 3")
                 ouvindoMensagem3 = False
                 print("OUVINDO MENSAGEM 4")
-                break
+                
             
             else:
                 continue
@@ -93,7 +94,7 @@ def sistemaRecebimento(com):
             #com.sendData(facadeEnlace.encapsulate(None, 3))
             #print("MANDOU MENSAGEM 3")
         
-            bytesSeremLidos = com.rx.getBufferLen(True)
+            bytesSeremLidos = com.rx.getBufferLen(False)
             payload, lenPayload, messageType, ack, numeroPacote, totalPacote = com.getData(bytesSeremLidos)
 
             if numeroPacote == 1:
@@ -106,37 +107,18 @@ def sistemaRecebimento(com):
             else:
                 if esperandoPacotes == totalPacote:
                     if comecou == True:
-                        if InsperTor == numeroPacote:
-                            continue
-                        else:
-                            if erro4 <= 3:
-                                print("ERRO TIPO 4: PACOTE INESPERADO")
-                                print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
-                                print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
-                                com.sendData(facadeEnlace.encapsulate(None, 6))
-                                ouvindoMensagem4 = False
-                                InsperTor = 1
-                                pacoteAtual = 0
-                                esperandoPacotes = 0
-                                comecou = False
-                                erro4 += 1
-                                break
-                           
-                            else:
-                                ouvindoMensagem4 = False
-                                InsperTor = 1
-                                pacoteAtual = 0
-                                esperandoPacotes = 0
-                                comecou = False
-
-                                com.sendData(facadeEnlace.encapsulate(None, 7))
-                                print("MANDOU MENSAGEM TIPO 7")
-                                time.sleep(4)
-                                com.disable()
-                                print("-------------------------")
-                                print("ERRO FATAL DESCONHECIDO – RECOMECE TRANSMISSÃO")
-                                print("-------------------------")
-
+                        if InsperTor != numeroPacote:
+                        
+                            print("ERRO TIPO 4: PACOTE INESPERADO")
+                            print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
+                            print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
+                            com.sendData(facadeEnlace.encapsulate(None, 6))
+                            ouvindoMensagem4 = False
+                            InsperTor = 1
+                            pacoteAtual = 0
+                            esperandoPacotes = 0
+                            comecou = False
+                                
 
                 else:
                     ouvindoMensagem4 = False
@@ -156,50 +138,50 @@ def sistemaRecebimento(com):
                 pacoteAtual = numeroPacote
 
             if ack == True:
-                print("Recebeu tudo certo")
                 print("ENVIANDO MENSAGEM TIPO 5: ACKNOWLEDGE")
                 arquivo += payload
                 print("Pacote número ", pacoteAtual, " recebido, contendo payload de ", len(payload), " bytes")
                 print(InsperTor, " pacotes recebidos de um total de ", esperandoPacotes)
                 InsperTor += 1
                 com.sendData(facadeEnlace.encapsulate(None, 5))
-                ouvindoMensagem4 = False
-                break
+                
+                
             
             else:
                 print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
                 print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
                 com.sendData(facadeEnlace.encapsulate(None, 6))
-                ouvindoMensagem4 = False
+                
                 continue
 
 
-        time.sleep(5)
+            time.sleep(5)
 
-        if pacoteAtual == esperandoPacotes:
-            comecou == False
-            print("Tamanho total do payload do arquivo recebido: ", len(arquivo))
-            break
+            if pacoteAtual == esperandoPacotes:
+                comecou == False
+                print("Tamanho total do payload do arquivo recebido: ", len(arquivo))
+                time.sleep(5)
+                com.sendData(facadeEnlace.encapsulate(None, 5))
+                print("MANDOU MENSAGEM TIPO 7")
+                time.sleep(5)
+                com.disable()
+                print("-------------------------")
+                print("Comunicacao encerrada")
+                print("-------------------------")
+                rxBuff = io.BytesIO(arquivo)
+                img = Image.open(rxBuff)
+                draw = ImageDraw.Draw(img)
+                img.show()
+ 
 
-        else:
-            print("Recomeçando protocolo de comunicação para receber o pacote número ", InsperTor)
-            continue
+            else:
+                print("Ouvindo pacote ", InsperTor)
+                
 
 
         
     
-    time.sleep(2)
-    com.facadeEnlace.encapsulate(None, 7)
-    print("MANDOU MENSAGEM TIPO 7")
-    time.sleep(2)
-    com.disable()
-    print("-------------------------")
-    print("Comunicacao encerrada")
-    print("-------------------------")
-    rxBuff = io.BytesIO(arquivo)
-    img = Image.open(rxBuff)
-    draw = ImageDraw.Draw(img)
-    img.show()
+    
 
 
 
