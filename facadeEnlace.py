@@ -111,7 +111,6 @@ def encapsulate(payload, messageType):
             listOfPackages.insert(a,all)
             a+=1
 
-            print(len(payloadfinal))
         return listOfPackages
 
     elif messageType == 5:
@@ -243,4 +242,3 @@ def teste():
     testeSubject = encapsulate(imgByteArr,4)
     sanityCheck, txLen, messageType, ack, actualPackage, totalPackage= readHeadNAll(testeSubject[0])
     print(txLen)
-teste()
