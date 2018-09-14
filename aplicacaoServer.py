@@ -23,7 +23,7 @@ import io,os
 ####################################################
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
-serialName = "/dev/cu.usbmodem1411" # Mac    (variacao de)
+serialName = "/dev/cu.usbmodem1421" # Mac    (variacao de)
 #serialName = "COM4"                  # Windows(variacao de)
 
 ####################################################
@@ -38,7 +38,7 @@ def fromByteToInt(bytes):
 
 def sistemaRecebimento(com):
     com.enable()
-    print("porta COM aberta com sucesso")
+    
 
     ouvindoMensagem1 = True
     ouvindoMensagem3 = True
@@ -52,14 +52,14 @@ def sistemaRecebimento(com):
 
     while ouvindoMensagem1:
         
-        print("OUVINDO MENSAGEM 1")
+        print("\n\n\n\n * OUVINDO MENSAGEM 1\n\n\n\n\n\n")
         bytesSeremLidos = com.rx.getBufferLen(False)
 
         payload, lenPayload, messageType, ack, numeroPacote, totalPacote = com.getData(bytesSeremLidos)
         
         
         if messageType == 1:
-            print("RECEBEU MENSAGEM 1")
+            print("\n\n\n\n\n\n * RECEBEU MENSAGEM 1 \n")
             ouvindoMensagem1 = False
             
         
@@ -69,9 +69,10 @@ def sistemaRecebimento(com):
 
         while ouvindoMensagem3:
             
-            print("OUVINDO MENSAGEM 3")
+            
             com.sendData(facadeEnlace.encapsulate(None, 2))
-            print("MANDOU MENSAGEM 2")
+            print(" * MANDOU MENSAGEM 2 \n")
+            print(" * OUVINDO MENSAGEM 3")
         
             bytesSeremLidos = com.rx.getBufferLen(True)
             if bytesSeremLidos == 0:
@@ -79,9 +80,9 @@ def sistemaRecebimento(com):
             payload, lenPayload, messageType, ack, numeroPacote, totalPacote = com.getData(bytesSeremLidos)
 
             if messageType == 3:
-                print("RECEBEU MENSAGEM 3")
+                print("\n * RECEBEU MENSAGEM 3 \n")
                 ouvindoMensagem3 = False
-                print("OUVINDO MENSAGEM 4")
+                print(" * OUVINDO MENSAGEM 4: esperando pacote 1 \n")    
                 
             
             else:
@@ -90,7 +91,7 @@ def sistemaRecebimento(com):
 
 
         while ouvindoMensagem4:
-            print("OUVINDO MENSAGEM 4")
+            
             #com.sendData(facadeEnlace.encapsulate(None, 3))
             #print("MANDOU MENSAGEM 3")
         
@@ -109,9 +110,11 @@ def sistemaRecebimento(com):
                     if comecou == True:
                         if InsperTor != numeroPacote:
                         
+                            print("-------------------------")
                             print("ERRO TIPO 4: PACOTE INESPERADO")
                             print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
                             print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
+                            print("-------------------------")
                             com.sendData(facadeEnlace.encapsulate(None, 6))
                             ouvindoMensagem4 = False
                             InsperTor = 1
@@ -128,6 +131,7 @@ def sistemaRecebimento(com):
                     comecou = False
 
                     com.sendData(facadeEnlace.encapsulate(None, 7))
+                    print("-------------------------")
                     print("MANDOU MENSAGEM TIPO 7")
                     time.sleep(4)
                     com.disable()
@@ -138,18 +142,25 @@ def sistemaRecebimento(com):
                 pacoteAtual = numeroPacote
 
             if ack == True:
-                print("ENVIANDO MENSAGEM TIPO 5: ACKNOWLEDGE")
+                print("Mensagem tipo 5 – acknowledge da transmissão")
+                print("-------------------------")
                 arquivo += payload
-                print("Pacote número ", pacoteAtual, " recebido, contendo payload de ", len(payload), " bytes")
-                print(InsperTor, " pacotes recebidos de um total de ", esperandoPacotes)
+                print("Pacote ", pacoteAtual, " de ", esperandoPacotes, "recebido, contendo payload de ", len(payload), " bytes \n")
+                print("--------------------------------------------------")
                 InsperTor += 1
                 com.sendData(facadeEnlace.encapsulate(None, 5))
                 
                 
             
+            
             else:
+                print("-------------------------")
+                print("-------------------------")
                 print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
+                print("-------------------------")
                 print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
+                print("-------------------------")
+                print("-------------------------")
                 com.sendData(facadeEnlace.encapsulate(None, 6))
                 
                 continue
@@ -159,10 +170,12 @@ def sistemaRecebimento(com):
 
             if pacoteAtual == esperandoPacotes:
                 comecou == False
+                print("-------------------------")
                 print("Tamanho total do payload do arquivo recebido: ", len(arquivo))
+                print("-------------------------")
                 time.sleep(5)
-                com.sendData(facadeEnlace.encapsulate(None, 5))
-                print("MANDOU MENSAGEM TIPO 7")
+                com.sendData(facadeEnlace.encapsulate(None, 7))
+                print(" * MANDOU MENSAGEM TIPO 7")
                 time.sleep(5)
                 com.disable()
                 print("-------------------------")
@@ -175,15 +188,9 @@ def sistemaRecebimento(com):
                 break
 
             else:
-                print("Ouvindo pacote ", InsperTor)
+                print("--------------------------------------------------")
+                print("\n\nOuvindo pacote", InsperTor)
                 
-
-
-        
-    
-    
-
-
 
 def main():
 
@@ -192,30 +199,3 @@ def main():
     
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
