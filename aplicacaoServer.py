@@ -82,7 +82,7 @@ def sistemaRecebimento(com):
             if messageType == 3:
                 print("\n * RECEBEU MENSAGEM 3 \n")
                 ouvindoMensagem3 = False
-                print(" * OUVINDO MENSAGEM 4 – RECEBIMENTO DE PACOTES \n")    
+                print(" * OUVINDO MENSAGEM 4: esperando pacote 1 \n")    
                 
             
             else:
@@ -142,10 +142,11 @@ def sistemaRecebimento(com):
                 pacoteAtual = numeroPacote
 
             if ack == True:
-                print("ENVIANDO MENSAGEM TIPO 5: ACKNOWLEDGE")
+                print("Mensagem tipo 5 – acknowledge da transmissão")
+                print("-------------------------")
                 arquivo += payload
-                print("Pacote número ", pacoteAtual, " recebido, contendo payload de ", len(payload), " bytes")
-                print(InsperTor, " pacotes recebidos de um total de ", esperandoPacotes, "\n")
+                print("Pacote ", pacoteAtual, " de ", esperandoPacotes, "recebido, contendo payload de ", len(payload), " bytes \n")
+                print("--------------------------------------------------")
                 InsperTor += 1
                 com.sendData(facadeEnlace.encapsulate(None, 5))
                 
@@ -153,8 +154,13 @@ def sistemaRecebimento(com):
             
             
             else:
+                print("-------------------------")
+                print("-------------------------")
                 print("ERRO NA TRANSMISSÃO – MANDE DE NOVO")
+                print("-------------------------")
                 print("ENVIANDO MENSAGEM TIPO 6: NACKNOWLEDGE")
+                print("-------------------------")
+                print("-------------------------")
                 com.sendData(facadeEnlace.encapsulate(None, 6))
                 
                 continue
@@ -169,7 +175,7 @@ def sistemaRecebimento(com):
                 print("-------------------------")
                 time.sleep(5)
                 com.sendData(facadeEnlace.encapsulate(None, 7))
-                print("MANDOU MENSAGEM TIPO 7")
+                print(" * MANDOU MENSAGEM TIPO 7")
                 time.sleep(5)
                 com.disable()
                 print("-------------------------")
@@ -182,7 +188,8 @@ def sistemaRecebimento(com):
                 break
 
             else:
-                print("OUVINDO PACOTE", InsperTor)
+                print("--------------------------------------------------")
+                print("\n\nOuvindo pacote", InsperTor)
                 
 
 def main():
