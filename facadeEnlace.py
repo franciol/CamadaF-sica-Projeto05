@@ -240,6 +240,3 @@ def teste():
     imgByteArr = imgByteArr.getvalue()
     testeSubject = encapsulate(None,5)
     sanityCheck, txLen, messageType, ack, actualPackage, totalPackage= readHeadNAll(testeSubject)
-
-
-teste()
