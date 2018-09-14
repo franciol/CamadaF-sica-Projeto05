@@ -67,9 +67,8 @@ def sistemaEnvio(payload, com):
                 for payloadID in range(0,len(payloadlist)):
                     receivedCorrectly = False
                     while not receivedCorrectly:
-                        print(payloadlist[payloadID])
                         com.sendData(payloadlist[payloadID])
-                        print("Enviando pacote ",payloadID+1," de ",len(payloadlist)," .....")
+                        print("Enviando pacote ",payloadID+1," de ",len(payloadlist)," de tamanho ", len(payloadlist[payloadID])," bytes")
                         bufferLen = com.rx.getBufferLen(temtimout)
                         messaType = -1
                         if bufferLen == 0:
