@@ -88,7 +88,7 @@ class RX(object):
 
 
         while len(self.buffer) != lenGrow or len(self.buffer) == 0:
-            print("notReady")
+            print("Online")
             lenGrow=len(self.buffer)
             time.sleep(1)
             if valorIni == 0 :
