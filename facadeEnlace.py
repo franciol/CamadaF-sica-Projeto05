@@ -110,6 +110,8 @@ def encapsulate(payload, messageType):
 
             listOfPackages.insert(a,all)
             a+=1
+
+            print(len(payloadfinal))
         return listOfPackages
 
     elif messageType == 5:
@@ -189,7 +191,7 @@ def readHeadNAll(receivedAll):
     head = receivedAll[0:17]
     messageType = fromByteToInt(head[0:1])
     actualPackage = fromByteToInt(head[1:3])+1
-    totalPackage = fromByteToInt(head[4:6])
+    totalPackage = fromByteToInt(head[4:5])
     txLen = fromByteToInt(head[6:10])
     eopSystem = head[10:13]
     stuffByte = head[13:17]
@@ -238,5 +240,7 @@ def teste():
     imgByteArr = io.BytesIO()
     img.save(imgByteArr, format='JPEG')
     imgByteArr = imgByteArr.getvalue()
-    testeSubject = encapsulate(None,5)
-    sanityCheck, txLen, messageType, ack, actualPackage, totalPackage= readHeadNAll(testeSubject)
+    testeSubject = encapsulate(imgByteArr,4)
+    sanityCheck, txLen, messageType, ack, actualPackage, totalPackage= readHeadNAll(testeSubject[0])
+    print(txLen)
+teste()
