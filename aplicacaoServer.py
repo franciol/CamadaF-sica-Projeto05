@@ -172,7 +172,7 @@ def sistemaRecebimento(com):
                 img = Image.open(rxBuff)
                 draw = ImageDraw.Draw(img)
                 img.show()
- 
+                break
 
             else:
                 print("Ouvindo pacote ", InsperTor)
