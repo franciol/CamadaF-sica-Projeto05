@@ -96,9 +96,6 @@ def encapsulate(payload, messageType):
         for i in range(0,packTotal):
             payloadfinal = payload[i*90:(i*90)+90]
             payloadLen = int_to_byte(len(payloadfinal),5)
-            listOfPackages.insert(a,all)
-            print(listOfPackages[0])
-            a+=1
 
             head = int_to_byte(4,1)+int_to_byte(i,2)+int_to_byte(packTotal,2)+payloadLen+EOP+stuffingByte
 
@@ -108,6 +105,8 @@ def encapsulate(payload, messageType):
             all += EOP
 
 
+            listOfPackages.insert(a,all)
+            a+=1
         return listOfPackages
 
     elif messageType == 5:

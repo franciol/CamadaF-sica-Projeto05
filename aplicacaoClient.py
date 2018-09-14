@@ -68,10 +68,9 @@ def sistemaEnvio(payload, com):
                 for payloadID in range(0,len(payloadlist)):
                     receivedCorrectly = False
                     while not receivedCorrectly:
-                        #print(payload)
+                        print(payloadlist[payloadID])
                         com.sendData(payloadlist[payloadID])
-                        time.sleep(2)
-                        print("Enviando pacote ",payloadID+1," de ",len(payloadID)," .....")
+                        print("Enviando pacote ",payloadID+1," de ",len(payloadlist)," .....")
                         bufferLen = com.rx.getBufferLen(temtimout)
                         messaType = -1
                         if bufferLen == 0:
@@ -84,30 +83,19 @@ def sistemaEnvio(payload, com):
                         elif messaType == 6:
                             print("Erro no envio, Reenviando")
                         else:
-                            print("Erro de sincronização")
+                            print("Erro de sincronização, messaType = ",messaType)
                             print("Encerrando comunicação, favor reiniciar")
                             connectionALL = False
-                            break
+
+                print("terminou o Envio")
+                temtimout = True
                 issendingPayload = False
 
 
 
 
 
-        elif messaType == 5:
-            print("Servidor recebeu corretamente os dados do Payload")
-            chegoupayloadnoserver = True
-            chegoupayloadcerto = True
-
-
-        elif messaType == 6:
-            chegoupayloadnoserver = True
-            chegoupayloadcerto = False
-            print("Servidor recebeu os dados mas pacote estava corrompido")
-            #Reenviando payload
-            print("\nReenviando dados")
-            temtimout = True
-            timerparaACKNACK = 20
+        
 
         elif messaType == 7:
             com.disable()
@@ -124,7 +112,7 @@ def sistemaEnvio(payload, com):
             time.sleep(1)
             print("\nReenviando mensagem 1")
             enviou01 = True
-            com.sendData(None, 1)
+            com.sendData(facadeEnlace.encapsulate(None, 1))
 
         elif bufferLen == 0 and envioupayload:
             time.sleep(1)
